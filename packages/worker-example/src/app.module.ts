@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import type {
-  MerkleTree,
+  MerkleTree
 } from '@energyweb/worker';
 import { AppService } from './app.service';
 import { ScheduleModule } from '@nestjs/schedule';

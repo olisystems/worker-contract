@@ -18,19 +18,29 @@ worker.start(async ({ merkleTree, getVotingContract }) => {
   await tx.wait()
   console.log(`Worker: ${workerAddress} registered`)
 
-  const app = await NestFactory.createApplicationContext(
-    AppModule.register({
-      merkleTree,
-      votingContract,
-    })
-  )
 
-  app.enableShutdownHooks()
+  const tree= merkleTree.createMerkleTree(["leaves", "nodes", "las"]);
+
+  const rootHash = tree.getHexRoot();
+  
+
+  console.log("wokers output for verification result:", tree.verify(tree.getProof(tree.getLeaf(2)) ,tree.getLeaf(2), tree.getRoot()))
+  //verify(proof: any[], targetNode: Buffer | string, root: Buffer | string): boolean;
+  console.log("leaves", tree.getLeaf(2));
+  console.log('root hash: ' + rootHash);
+  // const app = await NestFactory.createApplicationContext(
+  //   AppModule.register({
+  //     merkleTree,
+  //     votingContract,
+  //   })
+  // )
+
+  // app.enableShutdownHooks()
 
   console.log(
     `${workerAddress} started on port ${appConfig.workerConfig.port}, connected to voting contract on ${appConfig.workerConfig.diamondContractAddress}`
   )
-  await app.init()
+  // await app.init()
 })
 
 process.on('SIGINT', () => {

@@ -15,7 +15,7 @@ const MATCHING_ENDED_GRACEFULLY = 'MATCHING_ENDED_GRACEFULLY';
 @Injectable()
 export class AppService implements OnApplicationBootstrap, OnModuleDestroy {
   private logger = new PinoLogger({ renameContext: AppService.name });
-  private matchingAbortController = new AbortController();
+  private matchingAbortController; //= new AbortController();
   private inputSyncTimeoutId: NodeJS.Timer | null = null;
   private resultsSyncTimeoutId: NodeJS.Timer | null = null;
 
@@ -66,6 +66,7 @@ export class AppService implements OnApplicationBootstrap, OnModuleDestroy {
 
   async startMatching() {
     while (!this.matchingAbortController.signal.aborted) {
+      console.log('Matching contrue...');
       try {
         await this.matchingFacade.match();
       } catch (err) {
