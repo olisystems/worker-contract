@@ -23,17 +23,18 @@ export class AppModule {
   }) {
     return {
       module: AppModule,
-      imports: [
-        LoggerModule.forRoot(),
-        ScheduleModule.forRoot(),
-        MatchingModule.register({
-          votingContract,
-          merkleTree,
-        }),
-        InputModule,
-        ExternalResultModule,
-        DatabaseKyselyModule.forRoot(),
-        EventEmitterModule.forRoot(),
+      imports: 
+      [
+        // LoggerModule.forRoot(),
+        // ScheduleModule.forRoot(),
+        // MatchingModule.register({
+        //   votingContract,
+        //   merkleTree,
+        // }),
+        // InputModule,
+        // ExternalResultModule,
+        // DatabaseKyselyModule.forRoot(),
+        // EventEmitterModule.forRoot(),
       ],
       providers: [AppService],
     };

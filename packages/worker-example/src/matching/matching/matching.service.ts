@@ -24,6 +24,7 @@ export class MatchingService {
     private receivers: MatchingResultReceiver[],
   ) {}
 
+
   public async match(): Promise<void> {
     await this.inputFacade.withInput(async (input) => {
       if (!input) {
