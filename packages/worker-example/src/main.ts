@@ -12,66 +12,23 @@ import { EnergyType } from 'types'
 
 const { workerBlockchainAddress, ...workerConfig } = appConfig.workerConfig
 const worker = new Worker(workerConfig)
-// class EntityImpl implements Entity {
-//   constructor(public id: string, public volume: number, public siteId: string, public regionId: string) {
-//     // Class constructor with property assignments
-//   }
-// }
-
-// class EntityConsumptionImpl implements EntityConsumption {
-//   constructor(
-//     public id: string,
-//     public volume: number,
-//     public siteId: string,
-//     public regionId: string,
-//     public energyPriorities: { energyType: string, priority: number }[],
-//     public shouldMatchByRegion: boolean
-//   ) {
-//     // Class constructor with property assignments
-//   }
-// }
 
 
 worker.start(async ({ merkleTree, getVotingContract }) => {
 
   const workerAddress = appConfig.workerConfig.workerBlockchainAddress
   const votingContract = getVotingContract()
-  // const entity: Entity = new EntityImpl('12345', 1000, '67890', 'abcd1234');
-  
-  // const entityConsumption: EntityConsumption = new EntityConsumptionImpl(
-  //   '12345',             // id
-  //   1000,                 // volume
-  //   '67890',             // siteId
-  //   'Bavaria',          // regionId
-  //   [                    // energyPriorities
-  //     { energyType: 'electricity', priority: 1 },
-  //     { energyType: 'natural gas', priority: 2 }
-  //   ],
-  //   true                 // shouldMatchByRegion
-  // );
-
-  // console.log(entityConsumption);
-
-  // const consumptions: EntityConsumption[] = [
-  //   // Define EntityConsumption objects
-  //   // ...
-  // ];
-  
-  // const generations: EntityGeneration[] = [
-  //   // Define EntityGeneration objects
-  //   // ...
-  // ];
 
 
   const consumers: EntityConsumption[] = [
     {
       energyPriorities: [
-        { energyType: "EnergyType.Electricity", priority: 1 },
+        { energyType: "electric", priority: 1 },
         { energyType: "EnergyType.Gas", priority: 2 }
       ],
-      shouldMatchByRegion: true,
+      shouldMatchByRegion: false,
       shouldMatchByCountry: false,
-      shouldMatchByOtherCountries: true,
+      shouldMatchByOtherCountries: false,
       id: '2',
       volume: 10,
       siteId: '3',
@@ -81,7 +38,7 @@ worker.start(async ({ merkleTree, getVotingContract }) => {
     {
       energyPriorities: [
         { energyType: "EnergyType.Water", priority: 1 },
-        { energyType: "EnergyType.Oil", priority: 2 }
+        { energyType: "oil", priority: 2 }
       ],
       shouldMatchByRegion: false,
       shouldMatchByCountry: true,
@@ -93,10 +50,9 @@ worker.start(async ({ merkleTree, getVotingContract }) => {
       countryId: '1'
     }
   ];
-
-
   console.log(consumers);
-  const generation: EntityGeneration[] = 
+
+  const generations: EntityGeneration[] = 
   [
     {
       id: '3',
@@ -115,11 +71,11 @@ worker.start(async ({ merkleTree, getVotingContract }) => {
       countryId: '1'
     },
   ]
-  console.log(generation);
+  console.log(generations);
 
   const input: ProportionalMatcher.Input = {
     consumptions: consumers,
-    generations: generation
+    generations: generations
   };
 
   const match: ProportionalMatcher.Result = ProportionalMatcher.match(input);
@@ -132,16 +88,15 @@ worker.start(async ({ merkleTree, getVotingContract }) => {
   await tx.wait()
   console.log(`Worker: ${workerAddress} registered`)
 
-  const tree= merkleTree.createMerkleTree(["leaves", "nodes", "las"]);
+  const tree = merkleTree.createMerkleTree(["leaves", "nodes", "las"]);
 
   const rootHash = tree.getHexRoot();
 
   
 
   console.log("wokers output for verification result:", tree.verify(tree.getProof(tree.getLeaf(2)) , tree.getLeaf(2), tree.getRoot()))
-  //verify(proof: any[], targetNode: Buffer | string, root: Buffer | string): boolean;
-  // console.log("leaves", tree.getLeaf(2));
-  matchingResultBackendSender
+  
+
   console.log('root hash: ' + rootHash);
   const app = await NestFactory.createApplicationContext(
     AppModule.register({
