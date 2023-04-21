@@ -72,11 +72,11 @@ worker.start(async ({ merkleTree, getVotingContract }) => {
       shouldMatchByRegion: true,
       shouldMatchByCountry: false,
       shouldMatchByOtherCountries: true,
-      id: '',
-      volume: 0,
-      siteId: '',
-      regionId: '',
-      countryId: ''
+      id: '2',
+      volume: 10,
+      siteId: '3',
+      regionId: '1',
+      countryId: '2'
     },
     {
       energyPriorities: [
@@ -86,52 +86,45 @@ worker.start(async ({ merkleTree, getVotingContract }) => {
       shouldMatchByRegion: false,
       shouldMatchByCountry: true,
       shouldMatchByOtherCountries: false,
-      id: '',
-      volume: 0,
-      siteId: '',
-      regionId: '',
-      countryId: ''
+      id: '1',
+      volume: 20,
+      siteId: '2',
+      regionId: '1',
+      countryId: '1'
     }
   ];
 
 
   console.log(consumers);
-  const generation: EntityGeneration = 
-  {
-    id: '3',
-    volume: 60,
-    siteId: 'site6',
-    regionId: 'region6',
-    energyType: '',
-    countryId: ''
-  }
+  const generation: EntityGeneration[] = 
+  [
+    {
+      id: '3',
+      volume: 60,
+      siteId: 'site6',
+      regionId: 'region6',
+      energyType: 'electric',
+      countryId: '2'
+    },
+    {
+      id: '4',
+      volume: 60,
+      siteId: 'site5',
+      regionId: 'region5',
+      energyType: 'oil',
+      countryId: '1'
+    },
+  ]
   console.log(generation);
-  // const generationArray: EntityGeneration[] = [
-  //   {
-  //     id: '1',
-  //     volume: 100,
-  //     siteId: 'site1',
-  //     regionId: 'region1',
-  //     energyType: EnergyType.Electricity
-  //   },
-  //   {
-  //     id: '2',
-  //     volume: 200,
-  //     siteId: 'site2',
-  //     regionId: 'region2',
-  //     energyType: EnergyType.Gas
-  //   },
-  //   {
-  //     id: '3',
-  //     volume: 150,
-  //     siteId: 'site3',
-  //     regionId: 'region3',
-  //     energyType: EnergyType.Water
-  //   }
-  // ];
 
-  // ProportionalMatcher.Input.entityConsumption(entityConsumption
+  const input: ProportionalMatcher.Input = {
+    consumptions: consumers,
+    generations: generation
+  };
 
+  const match: ProportionalMatcher.Result = ProportionalMatcher.match(input);
+
+  console.log("match result", match);
   console.log(`Worker: ${workerAddress} not registered. Registering...`)
   const tx = await votingContract.addWorker(workerAddress, {
     gasLimit: 1000000,
