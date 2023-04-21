@@ -6,7 +6,6 @@ import { MatchingFacade } from './matching/matching.facade';
 import { BatteryService } from './matching/battery/battery.service';
 import { BatteryManager } from './matching/battery/battery-manager';
 import {ProportionalMatcher } from '@energyweb/algorithms';
-import {Entity, EntityConsumption, EntityGeneration} from './matching_types'
 
 
 @Injectable()
