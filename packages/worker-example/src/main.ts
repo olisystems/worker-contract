@@ -9,17 +9,20 @@ import { matchingResultBackendSender } from './matching/receivers/matching-resul
 import {ProportionalMatcher } from '@energyweb/algorithms'
 import {Entity, EntityConsumption, EntityGeneration, MatchData, Match, MatchPath, MatchRoundInput, PathStrategy } from '@energyweb/algorithms/src/proportional-matcher/types'
 import { EnergyType } from 'types'
+import { PinoLogger } from 'nestjs-pino';
+import { formatBytes32String } from 'ethers/lib/utils'
 
-const { workerBlockchainAddress, ...workerConfig } = appConfig.workerConfig
-const worker = new Worker(workerConfig)
+const { workerBlockchainAddress, ...workerConfig } = appConfig.workerConfig;
+const worker = new Worker(workerConfig);
+const logger = new PinoLogger({ renameContext: 'matchingResultVotingContractSender' });
 
 
 worker.start(async ({ merkleTree, getVotingContract }) => {
-
+  
   const workerAddress = appConfig.workerConfig.workerBlockchainAddress
   const votingContract = getVotingContract()
 
-
+  
   const consumers: EntityConsumption[] = [
     {
       energyPriorities: [
@@ -78,7 +81,7 @@ worker.start(async ({ merkleTree, getVotingContract }) => {
     generations: generations
   };
 
-  const match: ProportionalMatcher.Result = ProportionalMatcher.match(input);
+  const match: ProportionalMatcher.Result = await ProportionalMatcher.match(input);
 
   console.log("match result", match);
   console.log(`Worker: ${workerAddress} not registered. Registering...`)
@@ -88,7 +91,21 @@ worker.start(async ({ merkleTree, getVotingContract }) => {
   await tx.wait()
   console.log(`Worker: ${workerAddress} registered`)
 
+
+  console.log("matches1:  " + match.matches.length);
+
+  const matchingTree = merkleTree.createMerkleTree([match + ""]);
+
+  const matchingRootHash = matchingTree.getHexRoot();
+
+  const inputHash = merkleTree.hash(matchingRootHash);
+
+
   const tree = merkleTree.createMerkleTree(["leaves", "nodes", "las"]);
+
+  const data = formatBytes32String(inputHash.toString() +"");
+
+  await votingContract.vote(data, data);
 
   const rootHash = tree.getHexRoot();
 
