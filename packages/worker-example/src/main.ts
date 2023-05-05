@@ -11,10 +11,31 @@ import {Entity, EntityConsumption, EntityGeneration, MatchData, Match, MatchPath
 import { EnergyType } from 'types'
 import { PinoLogger } from 'nestjs-pino';
 import { formatBytes32String } from 'ethers/lib/utils'
+import { BytesLike } from "@ethersproject/bytes"; // Assuming you're using the ethers.js library
+
 
 const { workerBlockchainAddress, ...workerConfig } = appConfig.workerConfig;
 const worker = new Worker(workerConfig);
 const logger = new PinoLogger({ renameContext: 'matchingResultVotingContractSender' });
+
+async function stringToBytesLike(input: string): Promise<BytesLike> {
+  const encoder = new TextEncoder();
+  const encodedBytes = encoder.encode(input);
+  const bytesLike: BytesLike = Uint8Array.from(encodedBytes);
+  return bytesLike;
+}
+
+type PromiseOrValue<T> = T | Promise<T>;
+
+function convertStringToPromiseOrValue(input: string, shouldReturnPromise: boolean): PromiseOrValue<string> {
+  if (shouldReturnPromise) {
+    return new Promise((resolve) => {
+      resolve(input);
+    });
+  } else {
+    return input;
+  }
+}
 
 
 worker.start(async ({ merkleTree, getVotingContract }) => {
@@ -100,12 +121,20 @@ worker.start(async ({ merkleTree, getVotingContract }) => {
 
   const inputHash = merkleTree.hash(matchingRootHash);
 
+  
 
   const tree = merkleTree.createMerkleTree(["leaves", "nodes", "las"]);
 
-  const data = formatBytes32String(inputHash.toString() +"");
+  const shouldReturnPromise = true; // Set to true for a Promise, or false for a value
 
-  await votingContract.vote(data, data);
+  const result = convertStringToPromiseOrValue(inputHash + "", shouldReturnPromise);
+
+  
+
+  //const data = formatBytes32String(inputHash.toString() +"");
+  const votingId = stringToBytesLike("input");
+
+  await votingContract.vote(votingId + "", result + "", { gasLimit: 1000000 });
 
   const rootHash = tree.getHexRoot();
 
