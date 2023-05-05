@@ -74,3 +74,32 @@ For a deep-dive into the motivation and methodology behind our technical solutio
 -   [Twitter](https://twitter.com/energywebx)
 -   [Discord](https://discord.com/channels/706103009205288990/843970822254362664)
 -   [Telegram](https://t.me/energyweb)
+
+
+## How to run 
+-   In terminal go to packages/contracts  and run hardhat node
+```sh
+cd packages/contracts
+npx hardhat node
+```
+
+-   Open new terminal and deploy contracts if necessary clean and re-build
+```sh
+cd packages/contracts
+```
+
+```sh
+yarn run clean
+yarn run build
+yarn run compile
+```
+
+```sh
+npx hardhat run scripts/deploy/deployContracts.js --network ganache
+```
+
+-   Open new terminal and start worker contract in development mode
+```sh
+cd packages/worker-example
+yarn run start:dev
+```
