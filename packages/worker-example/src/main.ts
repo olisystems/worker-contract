@@ -88,10 +88,7 @@ worker.start(async ({ merkleTree, getVotingContract }) => {
 
   console.log("match result", match);
   console.log(`Worker: ${workerAddress} not registered. Registering...`)
-  const tx = await votingContract.addWorker(workerAddress, {
-    gasLimit: 1000000,
-  })
-  await tx.wait()
+
   console.log(`Worker: ${workerAddress} registered`)
 
 
