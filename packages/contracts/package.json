@@ -27,7 +27,9 @@
     "issuer:test": "yarn build && npx hardhat test test/issuer.spec.js",
     "voting:test": "yarn build && npx hardhat test test/voting/voting.spec.js",
     "contract:test": "yarn build && npx hardhat test test/contract.spec.js",
-    "gasreporter:test": "yarn build && npx hardhat test test/gasReporter.spec.js"
+    "gasreporter:test": "yarn build && npx hardhat test test/gasReporter.spec.js",
+    "start:hardhat-local-node": "npx hardhat node",
+    "deploy:hardhat-contracts-locally": "npx hardhat run scripts/deploy/deployContracts.js --network ganache"
   },
   "devDependencies": {
     "@energyweb/merkle-tree": "^3.0.0",
