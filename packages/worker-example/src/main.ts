@@ -83,6 +83,26 @@ worker.start(async ({ merkleTree, getVotingContract }) => {
   };
   console.log("Inputs: \n", input);
 
+
+  const match: ProportionalMatcher.Result = await ProportionalMatcher.match(input);
+
+  console.log("match result", match);
+  console.log(`Worker: ${workerAddress} not registered. Registering...`)
+
+  console.log(`Worker: ${workerAddress} registered`)
+
+
+  console.log("matches1:  " + match.matches.length);
+
+  const matchingTree = merkleTree.createMerkleTree([JSON.stringify(match)]);
+
+  const matchingRootHash = matchingTree.getHexRoot();
+
+  const inputHash = merkleTree.hash(matchingRootHash);
+
+  console.log("inputHash: " + inputHash);
+
+
   console.log(`Worker: ${workerAddress} not registered. Registering...`)
   const tx = await votingContract.addWorker(workerAddress, {
     gasLimit: 1000000,
